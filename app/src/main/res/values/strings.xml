@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Unspoken</string>
+    <string name="register">Buat akun</string>
+    <string name="login">Login</string>
+</resources>

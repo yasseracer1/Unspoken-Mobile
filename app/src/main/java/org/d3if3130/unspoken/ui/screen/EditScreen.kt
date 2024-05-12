@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -49,6 +50,7 @@ import androidx.navigation.compose.rememberNavController
 import org.d3if3130.unspoken.DisplayAlertDialog
 import org.d3if3130.unspoken.R
 import org.d3if3130.unspoken.database.CeritaDb
+import org.d3if3130.unspoken.ui.theme.Orange
 import org.d3if3130.unspoken.ui.theme.UnspokenTheme
 import org.d3if3130.unspoken.util.ViewModelFactory
 
@@ -91,18 +93,24 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = stringResource(id = R.string.kembali),
-                            tint = MaterialTheme.colorScheme.primary
+                            tint = Color.White
                         )
                     }
                 },
                 title = {
                     if (id == null)
-                        Text(text = stringResource(id = R.string.tambah_catatan))
+                        Text(
+                            text = stringResource(id = R.string.tambah_catatan),
+                            color = Color.White,
+                        )
                     else
-                        Text(text = stringResource(id = R.string.edit_catatan))
+                        Text(
+                            text = stringResource(id = R.string.edit_catatan),
+                            color = Color.White,
+                        )
                 },
                 colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    containerColor = Orange,
                     titleContentColor = MaterialTheme.colorScheme.primary
                 ),
                 actions = {
@@ -120,7 +128,7 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
                         Icon(
                             imageVector = Icons.Filled.Check,
                             contentDescription = stringResource(id = R.string.simpan),
-                            tint = MaterialTheme.colorScheme.primary
+                            tint = Color.White
                         )
                     }
                     if (id != null) {
@@ -167,28 +175,6 @@ fun FormMahasiswa(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        OutlinedTextField(
-            value = judul,
-            onValueChange = { onJudulChange(it) },
-            label = { Text(text = stringResource(id = R.string.judul)) },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Words,
-                imeAction = ImeAction.Next
-            ),
-            modifier = Modifier.fillMaxWidth()
-        )
-        OutlinedTextField(
-            value = catatan,
-            onValueChange = { onCatatanChange(it) },
-            label = { Text(text = stringResource(id = R.string.isi)) },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Words,
-                imeAction = ImeAction.Next
-            ),
-            modifier = Modifier.fillMaxWidth()
-        )
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -215,6 +201,28 @@ fun FormMahasiswa(
                 }
             }
         }
+        OutlinedTextField(
+            value = judul,
+            onValueChange = { onJudulChange(it) },
+            label = { Text(text = stringResource(id = R.string.judul)) },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Words,
+                imeAction = ImeAction.Next
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
+        OutlinedTextField(
+            value = catatan,
+            onValueChange = { onCatatanChange(it) },
+            label = { Text(text = stringResource(id = R.string.isi)) },
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Words,
+                imeAction = ImeAction.Next
+            ),
+            modifier = Modifier.fillMaxWidth().
+            height(390.dp)
+        )
     }
 }
 

@@ -6,7 +6,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,13 +19,15 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -35,7 +36,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -68,14 +68,6 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
     var tema by remember { mutableStateOf("") }
 
     var showDialog by remember { mutableStateOf(false) }
-
-    val temaOptions = listOf(
-        "None Theme",
-        "Lives",
-        "Sport",
-        "Adventure",
-        "Gaming"
-    )
 
     LaunchedEffect( true ){
         if (id == null) return@LaunchedEffect
@@ -148,26 +140,23 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
             )
         }
     ) { padding ->
-        FormMahasiswa(
+        FormCerita(
             judul = judul,
             onJudulChange = { judul = it },
             catatan = catatan,
             onCatatanChange = { catatan = it},
-            tema = tema,
-            onTemaChange = { tema = it},
-            kelasOptions = temaOptions,
             modifier = Modifier.padding(padding)
         )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FormMahasiswa(
+fun FormCerita(
     judul: String, onJudulChange: (String) -> Unit,
     catatan: String, onCatatanChange: (String) -> Unit,
-    tema: String, onTemaChange: (String) -> Unit,
-    kelasOptions: List<String>,
     modifier: Modifier
+    
 ) {
     Column (
         modifier = modifier
@@ -186,17 +175,40 @@ fun FormMahasiswa(
                 )
                 .padding(8.dp)
         ) {
-            Column {
-                kelasOptions.forEach { option ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        RadioButton(
-                            selected = tema == option,
-                            onClick = { onTemaChange(option) }
+            val temaOptions = listOf(
+                "None Theme",
+                "Lives",
+                "Sport",
+                "Adventure",
+                "Gaming"
+            )
+            var isExpanded by remember { mutableStateOf(false) }
+            var selectedText by remember { mutableStateOf(temaOptions[0]) }
+            ExposedDropdownMenuBox(
+                expanded = isExpanded,
+                onExpandedChange = { isExpanded = !isExpanded }
+            ) {
+                TextField(
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth(),
+                    value = selectedText,
+                    onValueChange ={},
+                    readOnly = true,
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) }
+                )
+                ExposedDropdownMenu(
+                    expanded = isExpanded,
+                    onDismissRequest = { isExpanded = false }) {
+                    temaOptions.forEachIndexed{index, text ->
+                        DropdownMenuItem(
+                            text = { Text(text = text) },
+                            onClick = {
+                                selectedText = temaOptions[index]
+                                isExpanded = false
+                            },
+                                contentPadding =ExposedDropdownMenuDefaults.ItemContentPadding
                         )
-                        Text(text = option)
                     }
                 }
             }
@@ -220,8 +232,9 @@ fun FormMahasiswa(
                 capitalization = KeyboardCapitalization.Words,
                 imeAction = ImeAction.Next
             ),
-            modifier = Modifier.fillMaxWidth().
-            height(390.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(390.dp)
         )
     }
 }

@@ -21,4 +21,8 @@
     <string name="hapus">Hapus</string>
     <string name="isi">Isi cerita :</string>
     <string name="profile">Profil</string>
+    <string name="none_theme">None Theme</string>
+    <string name="sports">Sports</string>
+    <string name="adventures">Adventures</string>
+    <string name="gaming">Gaming</string>
 </resources>

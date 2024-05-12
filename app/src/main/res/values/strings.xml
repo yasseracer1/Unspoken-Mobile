@@ -2,4 +2,20 @@
     <string name="app_name">Unspoken</string>
     <string name="register">Buat akun</string>
     <string name="login">Login</string>
+    <string name="grid">Grid</string>
+    <string name="list">List</string>
+    <string name="tambah_cerita">Tambah cerita</string>
+    <string name="list_kosong">List kosong</string>
+    <string name="kembali">Kembali</string>
+    <string name="tambah_catatan">Tambah cerita</string>
+    <string name="edit_catatan">Edit cerita</string>
+    <string name="invalid">Invalid</string>
+    <string name="simpan">Simpan</string>
+    <string name="opsi_lainnya">Opsi lainnya</string>
+    <string name="hapus_catatan">Hapus cerita</string>
+    <string name="judul">Judul</string>
+    <string name="isi_catatan">Isi cerita</string>
+    <string name="pesan_hapus">Hapus cerita?</string>
+    <string name="tombol_hapus">Hapus</string>
+    <string name="tombol_batal">Batal</string>
 </resources>

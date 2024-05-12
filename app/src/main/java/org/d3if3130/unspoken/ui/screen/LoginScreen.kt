@@ -1,7 +1,6 @@
-package org.d3if3130.unspoken.screen
+package org.d3if3130.unspoken.ui.screen
 
 import android.content.res.Configuration
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,11 +31,9 @@ import org.d3if3130.unspoken.R
 import org.d3if3130.unspoken.ui.theme.Orange
 import org.d3if3130.unspoken.ui.theme.UnspokenTheme
 
-
 @Composable
-fun RegisterScreen(navController: NavHostController){
+fun LoginScreen(navController: NavHostController){
 
-    var nama by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -44,17 +41,20 @@ fun RegisterScreen(navController: NavHostController){
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
+    ) {
         Text(
             text = "Unspoken",
             fontSize = 50.sp,
             fontWeight = FontWeight.Bold,
-            color = Orange,
-            modifier = Modifier.height(110.dp)
+            color = Orange
+        )
+
+        Spacer(
+            modifier = Modifier.height(50.dp)
         )
 
         Text(
-            text = "Silahkan Registrasi",
+            text = "Selamat Datang",
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold
         )
@@ -64,7 +64,7 @@ fun RegisterScreen(navController: NavHostController){
         )
 
         Text(
-            text = "Daftarkan diri anda"
+            text = "Login ke Akun Anda"
         )
 
         Spacer(
@@ -76,25 +76,11 @@ fun RegisterScreen(navController: NavHostController){
             onValueChange = {
                 email = it
             },
-            label = { Text(text = "Nama Pengguna")}
+            label = { Text(text = "Alamat Email") }
         )
 
         Spacer(
-            modifier = Modifier.height(10.dp)
-        )
-
-        OutlinedTextField(
-            value = nama,
-            onValueChange = {
-                nama = it
-            },
-            label = { Text(text = "Email")
-            },
-            visualTransformation = PasswordVisualTransformation()
-        )
-
-        Spacer(
-            modifier = Modifier.height(10.dp)
+            modifier = Modifier.height(16.dp)
         )
 
         OutlinedTextField(
@@ -102,21 +88,8 @@ fun RegisterScreen(navController: NavHostController){
             onValueChange = {
                 password = it
             },
-            label = { Text(text = "Password")
-            },
-            visualTransformation = PasswordVisualTransformation()
-        )
-
-        Spacer(
-            modifier = Modifier.height(10.dp)
-        )
-
-        OutlinedTextField(
-            value = password,
-            onValueChange = {
-                password = it
-            },
-            label = { Text(text = "Konfirmasi Password")
+            label = {
+                Text(text = "Password")
             },
             visualTransformation = PasswordVisualTransformation()
         )
@@ -127,38 +100,37 @@ fun RegisterScreen(navController: NavHostController){
 
         Button(
             onClick = {
-                Log.i("Credential", "Nama Pengguna : $nama Email : $email Password : $password")
-            }) {
-            Text(
-                text = "Registrasi"
-            )
-
+//                navController.navigate(Screen.Dashboard.route)
+            }
+        ) {
+            Text(text = "Login")
         }
 
         Spacer(
             modifier = Modifier.height(32.dp)
         )
 
-        Text(text = "Sudah punya akun?", modifier = Modifier.clickable { }
+        Text(text = "Belum punya akun?", modifier = Modifier.clickable { }
         )
         TextButton(
             onClick = {
-                navController.navigate(Screen.Login.route)
+                navController.navigate(Screen.Register.route)
             }
         ) {
             Text(
-                text = stringResource(id = R.string.login),
+                text = stringResource(id = R.string.register),
                 fontSize = 18.sp
             )
         }
     }
 }
 
+
 @Preview(showBackground = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
-fun RegisterScreenPreview() {
+fun LoginScreenPreview() {
     UnspokenTheme {
-        RegisterScreen(rememberNavController())
+        LoginScreen(rememberNavController())
     }
 }

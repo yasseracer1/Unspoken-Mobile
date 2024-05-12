@@ -100,7 +100,7 @@ fun LoginScreen(navController: NavHostController){
 
         Button(
             onClick = {
-//                navController.navigate(Screen.Dashboard.route)
+                navController.navigate(Screen.Home.route)
             }
         ) {
             Text(text = "Login")

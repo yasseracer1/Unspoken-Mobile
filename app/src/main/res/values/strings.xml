@@ -4,7 +4,6 @@
     <string name="login">Login</string>
     <string name="grid">Grid</string>
     <string name="list">List</string>
-    <string name="tambah_cerita">Tambah cerita</string>
     <string name="list_kosong">List kosong</string>
     <string name="kembali">Kembali</string>
     <string name="tambah_catatan">Tambah cerita</string>
@@ -18,4 +17,7 @@
     <string name="pesan_hapus">Hapus cerita?</string>
     <string name="tombol_hapus">Hapus</string>
     <string name="tombol_batal">Batal</string>
+    <string name="lainnya">Lainnya</string>
+    <string name="hapus">Hapus</string>
+    <string name="isi">Isi cerita :</string>
 </resources>

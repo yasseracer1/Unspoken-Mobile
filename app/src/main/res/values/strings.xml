@@ -4,7 +4,7 @@
     <string name="login">Login</string>
     <string name="grid">Grid</string>
     <string name="list">List</string>
-    <string name="list_kosong">List kosong</string>
+    <string name="postingan_kosong">Tidak ada postingan</string>
     <string name="kembali">Kembali</string>
     <string name="tambah_catatan">Tambah cerita</string>
     <string name="edit_catatan">Edit cerita</string>

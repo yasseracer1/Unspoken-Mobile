@@ -126,6 +126,7 @@ fun ScreenContent(showList: Boolean, modifier: Modifier, navController: NavHostC
     val viewModel: MainViewModel = viewModel(factory = factory)
     val data by viewModel.data.collectAsState()
 
+
     if (data.isEmpty()) {
         Column (
             modifier = modifier
@@ -134,7 +135,7 @@ fun ScreenContent(showList: Boolean, modifier: Modifier, navController: NavHostC
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(text = stringResource(id = R.string.list_kosong))
+            Text(text = stringResource(id = R.string.postingan_kosong))
         }
     }
     else {
@@ -185,11 +186,16 @@ fun ListItem(cerita: Cerita, onClick: () -> Unit) {
             fontWeight = FontWeight.Bold
         )
         Text(
+            text = cerita.tema,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
+        Text(
             text = cerita.catatan,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
-        Text(text = cerita.tema)
+        Text(text = cerita.tanggal)
     }
 }
 
@@ -215,12 +221,12 @@ fun GridItem(cerita: Cerita, onClick: () -> Unit){
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = cerita.catatan,
+                text = cerita.tema,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = cerita.tema,
+                text = cerita.catatan,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

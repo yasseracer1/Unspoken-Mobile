@@ -12,6 +12,8 @@ import org.d3if3130.unspoken.ui.screen.DetailScreen
 import org.d3if3130.unspoken.ui.screen.KEY_ID_CERITA
 import org.d3if3130.unspoken.ui.screen.LoginScreen
 import org.d3if3130.unspoken.ui.screen.MainScreen
+import org.d3if3130.unspoken.ui.screen.PostinganScreen
+import org.d3if3130.unspoken.ui.screen.ProfileScreen
 import org.d3if3130.unspoken.ui.screen.RegisterScreen
 
 @Composable
@@ -28,6 +30,12 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
         }
         composable(route = Screen.Home.route) {
             MainScreen(navController)
+        }
+        composable(route = Screen.Postingan.route) {
+            PostinganScreen(navController)
+        }
+        composable(route = Screen.Profile.route) {
+            ProfileScreen(navController)
         }
         composable(route = Screen.FormBaru.route) {
             DetailScreen(navController)

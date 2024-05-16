@@ -36,7 +36,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -47,6 +47,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -105,7 +106,7 @@ fun MainScreen(navController: NavHostController) {
         )
     )
     var selectedItemIndexed by rememberSaveable {
-        mutableStateOf(0)
+        mutableIntStateOf(0)
     }
     Scaffold(
         topBar = {
@@ -262,7 +263,14 @@ fun ListItem(cerita: Cerita, onClick: () -> Unit) {
             Text(text = cerita.tanggal)
         }
         Text(
-            text = cerita.judul,
+            text = "Tema:  " + cerita.tema,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            fontWeight = FontWeight.Bold,
+            fontStyle = FontStyle.Italic
+        )
+        Text(
+            text = "Judul Cerita: " + cerita.judul,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             fontWeight = FontWeight.Bold

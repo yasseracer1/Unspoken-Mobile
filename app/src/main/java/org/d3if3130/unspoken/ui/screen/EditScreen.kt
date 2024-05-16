@@ -2,7 +2,6 @@ package org.d3if3130.unspoken.ui.screen
 
 import android.content.res.Configuration
 import android.widget.Toast
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -69,7 +67,7 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
 
     var showDialog by remember { mutableStateOf(false) }
 
-    LaunchedEffect( true ){
+    LaunchedEffect(true) {
         if (id == null) return@LaunchedEffect
         val data = viewModel.getMahasiswa(id) ?: return@LaunchedEffect
         judul = data.judul
@@ -116,7 +114,8 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
                         } else {
                             viewModel.update(id, judul, catatan, tema)
                         }
-                        navController.popBackStack() }) {
+                        navController.popBackStack()
+                    }) {
                         Icon(
                             imageVector = Icons.Filled.Check,
                             contentDescription = stringResource(id = R.string.simpan),
@@ -144,7 +143,9 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
             judul = judul,
             onJudulChange = { judul = it },
             catatan = catatan,
-            onCatatanChange = { catatan = it},
+            onCatatanChange = { catatan = it },
+            tema = tema,
+            onTemaChange = { tema = it },
             modifier = Modifier.padding(padding)
         )
     }
@@ -155,10 +156,10 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
 fun FormCerita(
     judul: String, onJudulChange: (String) -> Unit,
     catatan: String, onCatatanChange: (String) -> Unit,
+    tema: String, onTemaChange: (String) -> Unit,
     modifier: Modifier
-    
 ) {
-    Column (
+    Column(
         modifier = modifier
             .fillMaxSize()
             .padding(16.dp),
@@ -168,22 +169,16 @@ fun FormCerita(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp)
-                .border(
-                    width = 1.dp,
-                    color = Color.Gray,
-                    shape = RoundedCornerShape(4.dp)
-                )
-                .padding(8.dp)
         ) {
             val temaOptions = listOf(
-                "None Theme",
-                "Lives",
-                "Sport",
-                "Adventure",
-                "Gaming"
+                "Romances",
+                "Sports",
+                "Adventures",
+                "Gaming",
+                "Mystery",
+                "Crimes",
             )
             var isExpanded by remember { mutableStateOf(false) }
-            var selectedText by remember { mutableStateOf(temaOptions[0]) }
             ExposedDropdownMenuBox(
                 expanded = isExpanded,
                 onExpandedChange = { isExpanded = !isExpanded }
@@ -192,22 +187,22 @@ fun FormCerita(
                     modifier = Modifier
                         .menuAnchor()
                         .fillMaxWidth(),
-                    value = selectedText,
-                    onValueChange ={},
+                    value = tema,
+                    onValueChange = {},
                     readOnly = true,
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) }
                 )
                 ExposedDropdownMenu(
                     expanded = isExpanded,
                     onDismissRequest = { isExpanded = false }) {
-                    temaOptions.forEachIndexed{index, text ->
+                    temaOptions.forEach { text ->
                         DropdownMenuItem(
                             text = { Text(text = text) },
                             onClick = {
-                                selectedText = temaOptions[index]
+                                onTemaChange(text)
                                 isExpanded = false
                             },
-                                contentPadding =ExposedDropdownMenuDefaults.ItemContentPadding
+                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
                         )
                     }
                 }
@@ -238,6 +233,7 @@ fun FormCerita(
         )
     }
 }
+
 
 @Composable
 fun DeleteAction(delete: () -> Unit) {

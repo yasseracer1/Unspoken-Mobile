@@ -16,7 +16,7 @@ interface CeritaDao {
     @Update
     suspend fun update(cerita: Cerita)
 
-    @Query("SELECT * FROM cerita ORDER BY tanggal ASC")
+    @Query("SELECT * FROM cerita ORDER BY tanggal DESC")
     fun getCerita(): Flow<List<Cerita>>
 
     @Query("SELECT * FROM cerita WHERE id = :id")

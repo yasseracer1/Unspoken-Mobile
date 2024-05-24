@@ -56,6 +56,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -78,7 +80,7 @@ data class BottomNavigationItem(
 )
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(navController: NavHostController) {
+fun MainScreen(navController: NavHostController, currentUser: FirebaseUser?) {
     val dataStore = SettingsDataStore(LocalContext.current)
 
     val items = listOf(
@@ -288,6 +290,6 @@ fun ListItem(cerita: Cerita, onClick: () -> Unit) {
 @Composable
 fun GreetingPreview() {
     UnspokenTheme {
-        MainScreen(rememberNavController())
+        MainScreen(rememberNavController(), FirebaseAuth.getInstance().currentUser)
     }
 }

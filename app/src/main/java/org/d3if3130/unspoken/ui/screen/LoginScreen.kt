@@ -15,9 +15,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -28,11 +30,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3if3130.mobpro1.navigation.Screen
 import org.d3if3130.unspoken.R
+import org.d3if3130.unspoken.google.GoogleSignIn
 import org.d3if3130.unspoken.ui.theme.Orange
 import org.d3if3130.unspoken.ui.theme.UnspokenTheme
 
 @Composable
-fun LoginScreen(navController: NavHostController){
+fun LoginScreen(navController: NavHostController, googleSignIn: GoogleSignIn){
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -105,6 +108,9 @@ fun LoginScreen(navController: NavHostController){
         ) {
             Text(text = "Login")
         }
+        Button(onClick = { googleSignIn.onSignIn(navController) }) {
+            Text(text = "Login with Google")
+        }
 
         Spacer(
             modifier = Modifier.height(32.dp)
@@ -131,6 +137,6 @@ fun LoginScreen(navController: NavHostController){
 @Composable
 fun LoginScreenPreview() {
     UnspokenTheme {
-        LoginScreen(rememberNavController())
+        LoginScreen(rememberNavController(), googleSignIn = GoogleSignIn(LocalContext.current, rememberCoroutineScope()))
     }
 }

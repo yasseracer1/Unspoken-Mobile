@@ -1,13 +1,17 @@
 package org.d3if3130.unspoken.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.google.firebase.auth.FirebaseAuth
 import org.d3if3130.mobpro1.navigation.Screen
+import org.d3if3130.unspoken.google.GoogleSignIn
 import org.d3if3130.unspoken.ui.screen.DetailScreen
 import org.d3if3130.unspoken.ui.screen.KEY_ID_CERITA
 import org.d3if3130.unspoken.ui.screen.LoginScreen
@@ -18,18 +22,24 @@ import org.d3if3130.unspoken.ui.screen.RegisterScreen
 
 @Composable
 fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
+
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val googleSignIn = GoogleSignIn(context = context, scope = scope)
+
     NavHost(
         navController = navController,
-        startDestination = Screen.Login.route
+        startDestination = if(FirebaseAuth.getInstance().currentUser == null) Screen.Login.route
+        else Screen.Home.route
     ) {
         composable(route = Screen.Login.route) {
-            LoginScreen(navController)
+            LoginScreen(navController, googleSignIn)
         }
         composable(route = Screen.Register.route) {
             RegisterScreen(navController)
         }
         composable(route = Screen.Home.route) {
-            MainScreen(navController)
+            MainScreen(navController, currentUser = FirebaseAuth.getInstance().currentUser)
         }
         composable(route = Screen.Postingan.route) {
             PostinganScreen(navController)

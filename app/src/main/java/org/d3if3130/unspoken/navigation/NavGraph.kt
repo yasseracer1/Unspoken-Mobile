@@ -42,10 +42,10 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
             MainScreen(navController, currentUser = FirebaseAuth.getInstance().currentUser)
         }
         composable(route = Screen.Postingan.route) {
-            PostinganScreen(navController)
+            PostinganScreen(navController,currentUser = FirebaseAuth.getInstance().currentUser)
         }
         composable(route = Screen.Profile.route) {
-            ProfileScreen(navController)
+            ProfileScreen(navController,currentUser = FirebaseAuth.getInstance().currentUser)
         }
         composable(route = Screen.FormBaru.route) {
             DetailScreen(navController)

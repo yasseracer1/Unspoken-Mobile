@@ -1,7 +1,10 @@
 package org.d3if3130.unspoken.ui.screen
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Create
@@ -30,7 +33,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -41,6 +46,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -52,7 +61,7 @@ import org.d3if3130.unspoken.ui.theme.UnspokenTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(navController: NavHostController) {
+fun ProfileScreen(navController: NavHostController,currentUser: FirebaseUser?) {
     val dataStore = SettingsDataStore(LocalContext.current)
     val showList by dataStore.layoutFlow.collectAsState(true)
 
@@ -105,15 +114,22 @@ fun ProfileScreen(navController: NavHostController) {
                             dataStore.saveLayout(!showList)
                         }
                     }) {
-                        Icon(
-                            painter = painterResource(
-                                R.drawable.baseline_account_circle_24
-                            ),
-                            contentDescription = stringResource(
-                                R.string.profile
-                            ),
-                            tint = Color.White
-                        )
+                        currentUser?.let { user ->
+                            user.photoUrl?.let {
+                                AsyncImage(
+                                    modifier = Modifier
+                                        .size(140.dp)
+                                        .clip(RoundedCornerShape(4.dp)),
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data(it)
+                                        .crossfade(true)
+                                        .build(),
+                                    contentDescription = "profile picture",
+                                    contentScale = ContentScale.Crop
+                                )
+                                Spacer(modifier = Modifier.size(16.dp))
+                            }
+                        }
                     }
                 }
             )
@@ -186,6 +202,6 @@ fun ScreenContent(modifier: Modifier) {
 @Composable
 fun ProfilePreview() {
     UnspokenTheme {
-        ProfileScreen(rememberNavController())
+        ProfileScreen(rememberNavController(), FirebaseAuth.getInstance().currentUser)
     }
 }

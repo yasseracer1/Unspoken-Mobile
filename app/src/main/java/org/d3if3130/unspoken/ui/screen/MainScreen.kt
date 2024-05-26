@@ -52,7 +52,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -168,7 +167,7 @@ fun MainScreen(navController: NavHostController, currentUser: FirebaseUser?) {
             ) {
                 Icon(
                     imageVector = Icons.Filled.Create,
-                    contentDescription = stringResource(id = R.string.tambah_catatan),
+                    contentDescription = stringResource(id = R.string.buat_postingan),
                     tint = Color.White
                 )
             }
@@ -255,47 +254,67 @@ fun ListItem(cerita: Cerita, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(16.dp),
+            .padding(start = 0.dp, top = 8.dp, end = 2.dp, bottom = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Row (
-            verticalAlignment = Alignment.CenterVertically
-        ){
-            Text(
-                text = "Yasser AR",
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = " ",
-            )
+        Row(
+
+        ) {
             Icon(
-                painter = painterResource(id = R.drawable.baseline_circle_24),
-                contentDescription = "")
-            Text(
-                text = " ",
+                modifier = Modifier
+                    .padding(horizontal = 10.dp),
+                painter = painterResource(id = R.drawable.baseline_account_circle_24_tampilan),
+                contentDescription = "Profile"
             )
-            Text(text = cerita.tanggal)
+            Column {
+                Row(
+                    modifier = Modifier,
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    Text(
+                        text = "Yasser AR",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(text = " ",)
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_circle_24),
+                        contentDescription = ""
+                    )
+                    Text(text = " ",)
+                    Text(text = "3 hari")
+                    Icon(
+                        modifier = Modifier
+                            .padding(start = 150.dp),
+                        painter = painterResource(id = R.drawable.baseline_more_vert_24),
+                        contentDescription = "more"
+                    )
+                }
+                Text(
+                    modifier = Modifier
+                        .padding(bottom = 5.dp),
+                    text = cerita.catatan,
+                    maxLines = 8,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Row (
+                    modifier = Modifier
+                        .padding(1.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        modifier = Modifier.padding(end = 20.dp),
+                        painter = painterResource(id = R.drawable.baseline_mode_comment_24),
+                        contentDescription = "comment"
+                    )
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_favorite_border_24),
+                        contentDescription = "like"
+                    )
+                }
+            }
         }
-        Text(
-            text = "Tema:  " + cerita.tema,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            fontWeight = FontWeight.Bold,
-            fontStyle = FontStyle.Italic
-        )
-        Text(
-            text = "Judul Cerita: " + cerita.judul,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            text = cerita.catatan,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis
-        )
     }
 }
 

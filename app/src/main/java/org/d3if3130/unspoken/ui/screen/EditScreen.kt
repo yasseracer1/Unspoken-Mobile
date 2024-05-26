@@ -3,29 +3,26 @@ package org.d3if3130.unspoken.ui.screen
 import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -37,8 +34,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -81,7 +78,7 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
-                            imageVector = Icons.Filled.ArrowBack,
+                            imageVector = Icons.Filled.Clear,
                             contentDescription = stringResource(id = R.string.kembali),
                             tint = Color.White
                         )
@@ -90,12 +87,12 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
                 title = {
                     if (id == null)
                         Text(
-                            text = stringResource(id = R.string.tambah_catatan),
+                            text = stringResource(id = R.string.buat_postingan),
                             color = Color.White,
                         )
                     else
                         Text(
-                            text = stringResource(id = R.string.edit_catatan),
+                            text = stringResource(id = R.string.edit_postingan),
                             color = Color.White,
                         )
                 },
@@ -105,14 +102,14 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
                 ),
                 actions = {
                     IconButton(onClick = {
-                        if (judul == "" || catatan == "" || tema == "") {
+                        if (catatan == "") {
                             Toast.makeText(context, R.string.invalid, Toast.LENGTH_LONG).show()
                             return@IconButton
                         }
                         if (id == null) {
-                            viewModel.insert(judul, catatan, tema)
+                            viewModel.insert("a", catatan, "a")
                         } else {
-                            viewModel.update(id, judul, catatan, tema)
+                            viewModel.update(id, "a", catatan, "a")
                         }
                         navController.popBackStack()
                     }) {
@@ -140,12 +137,8 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
         }
     ) { padding ->
         FormCerita(
-            judul = judul,
-            onJudulChange = { judul = it },
             catatan = catatan,
             onCatatanChange = { catatan = it },
-            tema = tema,
-            onTemaChange = { tema = it },
             modifier = Modifier.padding(padding)
         )
     }
@@ -154,82 +147,34 @@ fun DetailScreen(navController: NavHostController, id: Long? = null) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormCerita(
-    judul: String, onJudulChange: (String) -> Unit,
     catatan: String, onCatatanChange: (String) -> Unit,
-    tema: String, onTemaChange: (String) -> Unit,
     modifier: Modifier
 ) {
-    Column(
+    Row(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(5.dp),
+        horizontalArrangement = Arrangement.Center,
     ) {
-        Box(
+        Icon(
+            painter = painterResource(id = R.drawable.baseline_account_circle_24_tampilan),
+            contentDescription = "Profile"
+        )
+        TextField(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp)
-        ) {
-            val temaOptions = listOf(
-                "Romances",
-                "Sports",
-                "Adventures",
-                "Gaming",
-                "Mystery",
-                "Crimes",
-            )
-            var isExpanded by remember { mutableStateOf(false) }
-            ExposedDropdownMenuBox(
-                expanded = isExpanded,
-                onExpandedChange = { isExpanded = !isExpanded }
-            ) {
-                TextField(
-                    modifier = Modifier
-                        .menuAnchor()
-                        .fillMaxWidth(),
-                    value = tema,
-                    onValueChange = {},
-                    readOnly = true,
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded) }
-                )
-                ExposedDropdownMenu(
-                    expanded = isExpanded,
-                    onDismissRequest = { isExpanded = false }) {
-                    temaOptions.forEach { text ->
-                        DropdownMenuItem(
-                            text = { Text(text = text) },
-                            onClick = {
-                                onTemaChange(text)
-                                isExpanded = false
-                            },
-                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
-                        )
-                    }
-                }
-            }
-        }
-        OutlinedTextField(
-            value = judul,
-            onValueChange = { onJudulChange(it) },
-            label = { Text(text = stringResource(id = R.string.judul)) },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Words,
-                imeAction = ImeAction.Next
-            ),
-            modifier = Modifier.fillMaxWidth()
-        )
-        OutlinedTextField(
+                .fillMaxHeight(),
             value = catatan,
             onValueChange = { onCatatanChange(it) },
             label = { Text(text = stringResource(id = R.string.isi)) },
             keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Words,
-                imeAction = ImeAction.Next
+                capitalization = KeyboardCapitalization.Sentences
             ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(390.dp)
+            colors = TextFieldDefaults.colors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent
+            ),
         )
     }
 }

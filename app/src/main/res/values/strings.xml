@@ -6,8 +6,8 @@
     <string name="list">List</string>
     <string name="postingan_kosong">Tidak ada postingan</string>
     <string name="kembali">Kembali</string>
-    <string name="tambah_catatan">Tambah cerita</string>
-    <string name="edit_catatan">Edit cerita</string>
+    <string name="buat_postingan">Buat postingan</string>
+    <string name="edit_postingan">Edit postingan</string>
     <string name="invalid">Invalid</string>
     <string name="simpan">Simpan</string>
     <string name="opsi_lainnya">Opsi lainnya</string>
@@ -19,7 +19,7 @@
     <string name="tombol_batal">Batal</string>
     <string name="lainnya">Lainnya</string>
     <string name="hapus">Hapus</string>
-    <string name="isi">Isi cerita :</string>
+    <string name="isi">Apa yang sedang terjadi?</string>
     <string name="profile">Profil</string>
     <string name="none_theme">None Theme</string>
     <string name="sports">Sports</string>

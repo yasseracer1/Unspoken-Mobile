@@ -1,6 +1,7 @@
 package org.d3if3130.unspoken.google
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
@@ -60,6 +61,7 @@ open class GoogleSignIn(private val context: Context, private val scope: Corouti
                     Toast.LENGTH_SHORT
                 ).show()
                 e.printStackTrace()
+                Log.d("google", "${e.message}")
             }
         }
     }

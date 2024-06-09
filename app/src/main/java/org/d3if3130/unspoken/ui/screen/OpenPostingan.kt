@@ -1,11 +1,14 @@
 package org.d3if3130.unspoken.ui.screen
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Divider
@@ -18,29 +21,38 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import org.d3if3130.mobpro1.navigation.Screen
 import org.d3if3130.unspoken.R
-import org.d3if3130.unspoken.SettingsDataStore
+import org.d3if3130.unspoken.model.Postingan
 import org.d3if3130.unspoken.ui.theme.Orange
 import org.d3if3130.unspoken.ui.theme.UnspokenTheme
 
+const val KEY_ID_POSTINGAN = "idPostingan"
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OpenPostingan(navController: NavHostController) {
-    val dataStore = SettingsDataStore(LocalContext.current)
-    val showList by dataStore.layoutFlow.collectAsState(true)
+fun OpenPostingan(navController: NavHostController, id: String) {
+
+    val viewModel: MainViewModel = viewModel()
+    val data by viewModel.data
+
+    LaunchedEffect(id) {
+        viewModel.retrieveDetailPostingan(id)
+    }
 
     Scaffold(
         topBar = {
@@ -56,7 +68,7 @@ fun OpenPostingan(navController: NavHostController) {
                 },
                 title = {
                     Text(
-                        text = stringResource(id = R.string.posting),
+                        text = stringResource(id = R.string.postingan),
                         color = Color.White,
                     )
                 },
@@ -67,52 +79,49 @@ fun OpenPostingan(navController: NavHostController) {
             )
         }
     ) { padding ->
-        OpenScreenContent(Modifier.padding(padding), navController)
+        LazyColumn(
+            Modifier.padding(padding)
+        ) {
+            items(data) {
+                Postingan(postingan = it)
+            }
+        }
     }
 }
 
 @Composable
-fun OpenScreenContent(modifier: Modifier, navController: NavHostController) {
-    Column (
-        modifier = modifier
+fun Postingan(postingan: Postingan) {
+    Column(
+        modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 0.dp, top = 8.dp, end = 2.dp, bottom = 8.dp),
+            .padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column {
-            Row (
-                modifier = Modifier,
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ){
+            Row {
                 Icon(
                     modifier = Modifier
                         .padding(horizontal = 10.dp),
                     painter = painterResource(id = R.drawable.baseline_account_circle_24_tampilan),
                     contentDescription = "Profile"
                 )
-                Text(
-                    text = "Yasser AR",
-                    fontSize = 20.sp
-                )
+                Column {
+                    Text(
+                        text = postingan.username,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(text = postingan.postingan)
+                }
             }
             Text(
                 modifier = Modifier
                     .padding(10.dp),
-                text = "Dear Rovers,\n" +
-                    "Since the official launch of Wuthering Waves, we have received a lot of valuable feedback and suggestions through social media and in-game surveys. We are genuinely grateful for your attention and support.\n" +
-                    "We apologize for the deficiencies and issues present in Wuthering Waves, our first fully independently developed and globally published game at Kuro Games. We understand that this has affected your gaming experience, and we are working to improve it for those who love the game.\n" +
-                    "We have been working on optimizations and iterations for the current 1.0 version, and the development of subsequent version updates is also underway. We will address some of the most discussed and concerned issues."
-            )
-            Text(
-                modifier = Modifier
-                    .padding(10.dp),
-                text = "18:10 - 22 Mar 24",
+                text = postingan.tanggal_detail,
                 color = Color.Gray
             )
             Divider()
-            Row (
+            Row(
                 modifier = Modifier
                     .padding(15.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -129,7 +138,7 @@ fun OpenScreenContent(modifier: Modifier, navController: NavHostController) {
                 )
             }
             Divider()
-            Row (
+            Row(
                 modifier = Modifier
                     .padding(top = 10.dp, bottom = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -162,6 +171,6 @@ fun OpenScreenContent(modifier: Modifier, navController: NavHostController) {
 @Composable
 fun OpenScreenPreview() {
     UnspokenTheme {
-        OpenPostingan(rememberNavController())
+        OpenPostingan(rememberNavController(), "1")
     }
 }

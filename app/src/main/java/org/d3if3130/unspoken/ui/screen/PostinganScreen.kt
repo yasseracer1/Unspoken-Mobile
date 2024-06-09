@@ -1,16 +1,19 @@
 package org.d3if3130.unspoken.ui.screen
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Create
@@ -34,14 +37,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -54,21 +59,22 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.d3if3130.mobpro1.navigation.Screen
 import org.d3if3130.unspoken.R
-import org.d3if3130.unspoken.SettingsDataStore
-import org.d3if3130.unspoken.model.Cerita
+import org.d3if3130.unspoken.model.Postingan
 import org.d3if3130.unspoken.ui.theme.Orange
 import org.d3if3130.unspoken.ui.theme.UnspokenTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PostinganScreen(navController: NavHostController) {
-    val dataStore = SettingsDataStore(LocalContext.current)
-    val showList by dataStore.layoutFlow.collectAsState(true)
+fun PostinganScreen(navController: NavHostController, currentUser: FirebaseUser?) {
 
     val items = listOf(
         BottomNavigationItem(
@@ -80,7 +86,7 @@ fun PostinganScreen(navController: NavHostController) {
             badgeCount = 2
         ),
         BottomNavigationItem(
-            title = "Postingan",
+            title = "Postingan saya",
             route = Screen.Postingan.route,
             selectedIcon = Icons.Filled.DateRange,
             unselectedIcon = Icons.Outlined.DateRange,
@@ -116,10 +122,25 @@ fun PostinganScreen(navController: NavHostController) {
                 actions = {
                     IconButton(onClick = {
                         CoroutineScope(Dispatchers.IO).launch {
-                            dataStore.saveLayout(!showList)
+
                         }
                     }) {
-
+                        currentUser?.let { user ->
+                            user.photoUrl?.let {
+                                AsyncImage(
+                                    modifier = Modifier
+                                        .size(140.dp)
+                                        .clip(RoundedCornerShape(4.dp)),
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data(it)
+                                        .crossfade(true)
+                                        .build(),
+                                    contentDescription = "profile picture",
+                                    contentScale = ContentScale.Crop
+                                )
+                                Spacer(modifier = Modifier.size(16.dp))
+                            }
+                        }
                     }
                 }
             )
@@ -181,11 +202,15 @@ fun PostinganScreen(navController: NavHostController) {
 
 @Composable
 fun PostinganScreenContent(modifier: Modifier, navController: NavHostController) {
-    val postinganViewModel: PostinganViewModel = viewModel()
-    val dataPostingan = postinganViewModel.data
+    val viewModel: MainViewModel = viewModel()
+    val data by viewModel.data
+    val username = FirebaseAuth.getInstance().currentUser?.displayName.toString()
 
+    LaunchedEffect(username) {
+        viewModel.retrievePrivateUserPostingan(username)
+    }
 
-    if (dataPostingan.isEmpty()) {
+    if (data.isEmpty()) {
         Column (
             modifier = modifier
                 .fillMaxSize()
@@ -198,21 +223,22 @@ fun PostinganScreenContent(modifier: Modifier, navController: NavHostController)
     }
     else {
         LazyColumn(
-            modifier = modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 84.dp)
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(4.dp)
         ) {
-            items(dataPostingan) {
-                ListItemPostingan(cerita = it) {
-                    navController.navigate(Screen.FormUbah.withId(it.id))
+            items(data) {
+                ListItemPostingan(postingan = it) {
+                    navController.navigate(Screen.OpenPostingan.withId(it.id_postingan))
+                    Log.d("IDPOSTINGAN", "${it.id_postingan}")
                 }
-                Divider()
             }
         }
     }
 }
 
 @Composable
-fun ListItemPostingan(cerita: Cerita, onClick: () -> Unit) {
+fun ListItemPostingan(postingan: Postingan, onClick: () -> Unit) {
     Column (
         modifier = Modifier
             .fillMaxWidth()
@@ -233,7 +259,7 @@ fun ListItemPostingan(cerita: Cerita, onClick: () -> Unit) {
                     verticalAlignment = Alignment.CenterVertically
                 ){
                     Text(
-                        text = "Yasser AR",
+                        text = postingan.username,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         fontWeight = FontWeight.Bold
@@ -241,21 +267,20 @@ fun ListItemPostingan(cerita: Cerita, onClick: () -> Unit) {
                     Text(text = " ")
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_circle_24),
-                        contentDescription = ""
+                        contentDescription = "",
+                        tint = Color.Gray
                     )
                     Text(text = " ")
-                    Text(text = cerita.tanggal)
-                    Icon(
-                        modifier = Modifier
-                            .padding(start = 150.dp),
-                        painter = painterResource(id = R.drawable.baseline_more_vert_24),
-                        contentDescription = "more"
+                    Text(
+                        text = postingan.tanggal,
+                        color = Color.Gray
                     )
                 }
                 Text(
                     modifier = Modifier
-                        .padding(bottom = 5.dp),
-                    text = cerita.catatan,
+                        .padding(bottom = 10.dp),
+                    text = postingan.postingan,
+                    maxLines = 8,
                     overflow = TextOverflow.Ellipsis
                 )
                 Row (
@@ -272,10 +297,12 @@ fun ListItemPostingan(cerita: Cerita, onClick: () -> Unit) {
                         painter = painterResource(id = R.drawable.baseline_favorite_border_24),
                         contentDescription = "like"
                     )
+                    Text(text = postingan.suka)
                 }
             }
         }
     }
+    Divider()
 }
 
 @Preview(showBackground = true)
@@ -283,6 +310,6 @@ fun ListItemPostingan(cerita: Cerita, onClick: () -> Unit) {
 @Composable
 fun PostinganPreview() {
     UnspokenTheme {
-        PostinganScreen(rememberNavController())
+        PostinganScreen(rememberNavController(), FirebaseAuth.getInstance().currentUser)
     }
 }

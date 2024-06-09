@@ -14,8 +14,11 @@ import org.d3if3130.mobpro1.navigation.Screen
 import org.d3if3130.unspoken.google.GoogleSignIn
 import org.d3if3130.unspoken.ui.screen.DetailScreen
 import org.d3if3130.unspoken.ui.screen.KEY_ID_CERITA
+import org.d3if3130.unspoken.ui.screen.KEY_ID_POSTINGAN
 import org.d3if3130.unspoken.ui.screen.LoginScreen
 import org.d3if3130.unspoken.ui.screen.MainScreen
+import org.d3if3130.unspoken.ui.screen.MembuatPostingan
+import org.d3if3130.unspoken.ui.screen.OpenPostingan
 import org.d3if3130.unspoken.ui.screen.PostinganScreen
 import org.d3if3130.unspoken.ui.screen.ProfileScreen
 import org.d3if3130.unspoken.ui.screen.RegisterScreen
@@ -42,10 +45,28 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
             MainScreen(navController, currentUser = FirebaseAuth.getInstance().currentUser)
         }
         composable(route = Screen.Postingan.route) {
-            PostinganScreen(navController)
+            PostinganScreen(navController, currentUser = FirebaseAuth.getInstance().currentUser)
         }
+        composable(route = Screen.CreatePostingan.route) {
+            MembuatPostingan(navController)
+        }
+
+        composable(
+            route = Screen.OpenPostingan.route,
+            arguments = listOf(
+                navArgument(KEY_ID_POSTINGAN) {
+                    type = NavType.StringType
+                }
+            )
+        ) { navBackStackEntry ->
+            val id = navBackStackEntry.arguments?.getString(KEY_ID_POSTINGAN)
+            if (id != null) {
+                OpenPostingan(navController, id)
+            }
+        }
+
         composable(route = Screen.Profile.route) {
-            ProfileScreen(navController)
+            ProfileScreen(navController, currentUser = FirebaseAuth.getInstance().currentUser)
         }
         composable(route = Screen.FormBaru.route) {
             DetailScreen(navController)

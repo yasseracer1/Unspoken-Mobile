@@ -11,11 +11,11 @@ class ViewModelFactory(
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-            return MainViewModel(dao) as T
-        } else if (modelClass.isAssignableFrom(DetailViewModel::class.java)) {
-            return DetailViewModel(dao) as T
-        }
+//        if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
+//            return MainViewModel(dao) as T
+//        } else if (modelClass.isAssignableFrom(DetailViewModel::class.java)) {
+//            return DetailViewModel(dao) as T
+//        }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

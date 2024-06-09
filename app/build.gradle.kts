@@ -62,7 +62,6 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
@@ -72,8 +71,12 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("androidx.compose.foundation:foundation-android:1.6.7")
 
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
-    implementation ("androidx.lifecycle:lifecycle-runtime-compose:2.8.0")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.1")
+    implementation("com.squareup.retrofit2:retrofit:2.10.0")
+    implementation("com.squareup.retrofit2:converter-moshi:2.10.0")
+    implementation("com.squareup.moshi:moshi-kotlin:1.9.3")
+
+    implementation ("androidx.lifecycle:lifecycle-runtime-compose:2.8.1")
     implementation ("io.coil-kt:coil-compose:2.4.0")
 
     implementation("com.google.android.gms:play-services-auth:21.2.0")

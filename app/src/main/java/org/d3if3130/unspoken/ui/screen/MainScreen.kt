@@ -1,13 +1,12 @@
 package org.d3if3130.unspoken.ui.screen
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -37,7 +36,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -69,12 +68,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.d3if3130.mobpro1.navigation.Screen
 import org.d3if3130.unspoken.R
-import org.d3if3130.unspoken.SettingsDataStore
-import org.d3if3130.unspoken.database.CeritaDb
-import org.d3if3130.unspoken.model.Cerita
+import org.d3if3130.unspoken.model.Postingan
 import org.d3if3130.unspoken.ui.theme.Orange
 import org.d3if3130.unspoken.ui.theme.UnspokenTheme
-import org.d3if3130.unspoken.util.ViewModelFactory
 
 data class BottomNavigationItem(
     val title: String,
@@ -87,7 +83,6 @@ data class BottomNavigationItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(navController: NavHostController, currentUser: FirebaseUser?) {
-    val dataStore = SettingsDataStore(LocalContext.current)
 
     val items = listOf(
         BottomNavigationItem(
@@ -99,7 +94,7 @@ fun MainScreen(navController: NavHostController, currentUser: FirebaseUser?) {
             badgeCount = 2
         ),
         BottomNavigationItem(
-            title = "Postingan",
+            title = "Postingan saya",
             route = Screen.Postingan.route,
             selectedIcon = Icons.Filled.DateRange,
             unselectedIcon = Icons.Outlined.DateRange,
@@ -161,7 +156,7 @@ fun MainScreen(navController: NavHostController, currentUser: FirebaseUser?) {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate(Screen.FormBaru.route)
+                    navController.navigate(Screen.CreatePostingan.route)
                 },
                 containerColor = Orange
             ) {
@@ -215,41 +210,29 @@ fun MainScreen(navController: NavHostController, currentUser: FirebaseUser?) {
 
 @Composable
 fun ScreenContent(modifier: Modifier, navController: NavHostController) {
-    val context = LocalContext.current
-    val db = CeritaDb.getInstance(context)
-    val factory = ViewModelFactory(db.dao)
-    val viewModel: MainViewModel = viewModel(factory = factory)
-    val data by viewModel.data.collectAsState()
+    val viewModel: MainViewModel = viewModel()
+    val data by viewModel.data
 
-
-    if (data.isEmpty()) {
-        Column (
-            modifier = modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(text = stringResource(id = R.string.postingan_kosong))
-        }
+    LaunchedEffect(true) {
+        viewModel.retrieveData()
     }
-    else {
-        LazyColumn(
-                modifier = modifier.fillMaxSize(),
-                contentPadding = PaddingValues(bottom = 84.dp)
-            ) {
-                items(data) {
-                    ListItem(cerita = it) {
-                        navController.navigate(Screen.FormUbah.withId(it.id))
-                    }
-                    Divider()
-                }
+
+    LazyColumn(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(4.dp)
+    ) {
+        items(data) {
+            ListItem(postingan = it) {
+                navController.navigate(Screen.OpenPostingan.withId(it.id_postingan))
+                Log.d("IDPOSTINGAN", it.id_postingan)
+            }
         }
     }
 }
 
 @Composable
-fun ListItem(cerita: Cerita, onClick: () -> Unit) {
+fun ListItem(postingan: Postingan, onClick: () -> Unit) {
     Column (
         modifier = Modifier
             .fillMaxWidth()
@@ -257,9 +240,7 @@ fun ListItem(cerita: Cerita, onClick: () -> Unit) {
             .padding(start = 0.dp, top = 8.dp, end = 2.dp, bottom = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Row(
-
-        ) {
+        Row {
             Icon(
                 modifier = Modifier
                     .padding(horizontal = 10.dp),
@@ -272,29 +253,27 @@ fun ListItem(cerita: Cerita, onClick: () -> Unit) {
                     verticalAlignment = Alignment.CenterVertically
                 ){
                     Text(
-                        text = "Yasser AR",
+                        text = postingan.username,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         fontWeight = FontWeight.Bold
                     )
-                    Text(text = " ",)
+                    Text(text = " ")
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_circle_24),
-                        contentDescription = ""
+                        contentDescription = "",
+                        tint = Color.Gray
                     )
-                    Text(text = " ",)
-                    Text(text = "3 hari")
-                    Icon(
-                        modifier = Modifier
-                            .padding(start = 150.dp),
-                        painter = painterResource(id = R.drawable.baseline_more_vert_24),
-                        contentDescription = "more"
+                    Text(text = " ")
+                    Text(
+                        text = postingan.tanggal,
+                        color = Color.Gray
                     )
                 }
                 Text(
                     modifier = Modifier
-                        .padding(bottom = 5.dp),
-                    text = cerita.catatan,
+                        .padding(bottom = 10.dp),
+                    text = postingan.postingan,
                     maxLines = 8,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -312,9 +291,11 @@ fun ListItem(cerita: Cerita, onClick: () -> Unit) {
                         painter = painterResource(id = R.drawable.baseline_favorite_border_24),
                         contentDescription = "like"
                     )
+                    Text(text = postingan.suka)
                 }
             }
         }
+        Divider()
     }
 }
 

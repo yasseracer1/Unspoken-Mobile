@@ -21,8 +21,10 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -39,6 +41,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -108,9 +111,12 @@ fun MainScreen(navController: NavHostController, currentUser: FirebaseUser?) {
             hasNews = true
         )
     )
+
     var selectedItemIndexed by rememberSaveable {
         mutableIntStateOf(0)
     }
+    var showDialog by rememberSaveable { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -128,31 +134,26 @@ fun MainScreen(navController: NavHostController, currentUser: FirebaseUser?) {
                     titleContentColor = MaterialTheme.colorScheme.primary
                 ),
                 actions = {
-                    IconButton(onClick = {
-                        CoroutineScope(Dispatchers.IO).launch {
-
-                        }
-                    }) {
-                        currentUser?.let { user ->
-                            user.photoUrl?.let {
-                                AsyncImage(
-                                    modifier = Modifier
-                                        .size(140.dp)
-                                        .clip(RoundedCornerShape(4.dp)),
-                                    model = ImageRequest.Builder(LocalContext.current)
-                                        .data(it)
-                                        .crossfade(true)
-                                        .build(),
-                                    contentDescription = "profile picture",
-                                    contentScale = ContentScale.Crop
-                                )
-                                Spacer(modifier = Modifier.size(16.dp))
-                            }
+                    currentUser?.let { user ->
+                        user.photoUrl?.let {
+                            AsyncImage(
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(RoundedCornerShape(4.dp))
+                                    .clickable { showDialog = true },
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(it)
+                                    .crossfade(true)
+                                    .build(),
+                                contentDescription = "profile picture",
+                                contentScale = ContentScale.Crop
+                            )
                         }
                     }
                 }
             )
         },
+
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
@@ -177,7 +178,7 @@ fun MainScreen(navController: NavHostController, currentUser: FirebaseUser?) {
                             navController.navigate(item.route)
                         },
                         label = {
-                                Text(text = item.title)
+                            Text(text = item.title)
                         },
                         icon = {
                             BadgedBox(
@@ -206,6 +207,44 @@ fun MainScreen(navController: NavHostController, currentUser: FirebaseUser?) {
     ) { padding ->
         ScreenContent(Modifier.padding(padding), navController)
     }
+
+    if (showDialog) {
+        LogoutConfirmationDialog(
+            onConfirm = {
+                showDialog = false
+                FirebaseAuth.getInstance().signOut()
+                navController.navigate(Screen.Login.route) {
+                    popUpTo(Screen.Home.route) { inclusive = true }
+                }
+            },
+            onDismiss = {
+                showDialog = false
+            }
+        )
+    }
+}
+
+@Composable
+fun LogoutConfirmationDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(text = stringResource(id = R.string.logout_confirmation_title))
+        },
+        text = {
+            Text(text = stringResource(id = R.string.logout_confirmation_message))
+        },
+        confirmButton = {
+            Button(onClick = onConfirm) {
+                Text(text = stringResource(id = R.string.logout))
+            }
+        },
+        dismissButton = {
+            Button(onClick = onDismiss) {
+                Text(text = stringResource(id = R.string.cancel))
+            }
+        }
+    )
 }
 
 @Composable

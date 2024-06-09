@@ -30,4 +30,8 @@
     <string name="posting">Posting</string>
     <string name="postingan">Postingan</string>
     <string name="komentar">Beri komentar</string>
+    <string name="logout_confirmation_title">Apakah Anda Ingin Logout?</string>
+    <string name="logout">Logout</string>
+    <string name="cancel">Batal</string>
+    <string name="logout_confirmation_message">Kembali halaman login</string>
 </resources>

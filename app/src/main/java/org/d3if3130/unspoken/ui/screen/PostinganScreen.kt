@@ -148,7 +148,7 @@ fun PostinganScreen(navController: NavHostController, currentUser: FirebaseUser?
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    navController.navigate(Screen.FormBaru.route)
+                    navController.navigate(Screen.CreatePostingan.route)
                 },
                 containerColor = Orange
             ) {

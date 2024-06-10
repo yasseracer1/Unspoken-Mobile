@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.d3if3130.unspoken.model.Komentar
+import org.d3if3130.unspoken.model.PostKomentar
 import org.d3if3130.unspoken.model.PostPostingan
 import org.d3if3130.unspoken.model.Postingan
 import org.d3if3130.unspoken.model.RequestIdPostingan
@@ -16,6 +18,13 @@ class MainViewModel : ViewModel() {
 
     var data = mutableStateOf(emptyList<Postingan>())
         private set
+
+    var komentar = mutableStateOf(emptyList<Komentar>())
+        private set
+
+    var buatKomentar = mutableStateOf(emptyList<PostKomentar>())
+        private set
+
     var errorMessage = mutableStateOf<String?>(null)
         private set
 
@@ -34,7 +43,15 @@ class MainViewModel : ViewModel() {
             }
         }
     }
-
+    fun retrieveDetailPostingan(id_postingan: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                data.value = PostinganApi.service.getPostinganDetail(RequestIdPostingan(id_postingan))
+            } catch (e: Exception) {
+                Log.d("MainViewModel3", "Failure: ${e.message}")
+            }
+        }
+    }
     fun retrievePrivateUserPostingan(username: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -44,11 +61,10 @@ class MainViewModel : ViewModel() {
             }
         }
     }
-
-    fun retrieveDetailPostingan(id_postingan: String) {
+    fun retrieveKomentarPostingan(id_postingan: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                data.value = PostinganApi.service.getPostinganDetail(RequestIdPostingan(id_postingan))
+                komentar.value = PostinganApi.service.getDaftarKomentar(RequestIdPostingan(id_postingan))
             } catch (e: Exception) {
                 Log.d("MainViewModel3", "Failure: ${e.message}")
             }
@@ -65,6 +81,31 @@ class MainViewModel : ViewModel() {
                 )
 
                 val result = PostinganApi.service.postPostingan(
+                    post
+                )
+
+                if (result.status == "success")
+                    retrieveData()
+                else
+                    throw Exception(result.message)
+            } catch (e: Exception) {
+                Log.d("MainViewModel", "Failure: ${e.message}")
+                errorMessage.value = "Error: ${e.message}"
+            }
+        }
+    }
+
+    fun saveKomentar(id_postingan: String, username: String, isi_komentar: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val post = PostKomentar(
+                    id_postingan = id_postingan,
+                    username = username,
+                    isi_komentar = isi_komentar
+
+                )
+
+                val result = PostinganApi.service.postKomentar(
                     post
                 )
 

@@ -2,6 +2,8 @@ package org.d3if3130.unspoken.ui.screen
 
 import android.content.res.Configuration
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,6 +38,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import org.d3if3130.mobpro1.navigation.Screen
 import org.d3if3130.unspoken.R
+import org.d3if3130.unspoken.model.Komentar
 import org.d3if3130.unspoken.model.Postingan
 import org.d3if3130.unspoken.ui.theme.Orange
 import org.d3if3130.unspoken.ui.theme.UnspokenTheme
@@ -49,9 +52,11 @@ fun OpenPostingan(navController: NavHostController, id: String) {
 
     val viewModel: MainViewModel = viewModel()
     val data by viewModel.data
+    val komentar by viewModel.komentar
 
     LaunchedEffect(id) {
         viewModel.retrieveDetailPostingan(id)
+        viewModel.retrieveKomentarPostingan(id)
     }
 
     Scaffold(
@@ -83,14 +88,18 @@ fun OpenPostingan(navController: NavHostController, id: String) {
             Modifier.padding(padding)
         ) {
             items(data) {
-                Postingan(postingan = it)
+                Postingan(postingan = it, { navController.navigate(Screen.BeriKomentar.withId(it.id_postingan)) })
+                Log.d("IDKOMENTAR", it.id_postingan)
+            }
+            items(komentar) {
+                Komentar(komentar = it)
             }
         }
     }
 }
 
 @Composable
-fun Postingan(postingan: Postingan) {
+fun Postingan(postingan: Postingan, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -127,42 +136,52 @@ fun Postingan(postingan: Postingan) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                Icon(
-                    modifier = Modifier.padding(end = 20.dp),
-                    painter = painterResource(id = R.drawable.baseline_mode_comment_24),
-                    contentDescription = "comment"
-                )
-                Icon(
-                    painter = painterResource(id = R.drawable.baseline_favorite_border_24),
-                    contentDescription = "like"
-                )
-            }
-            Divider()
-            Row(
-                modifier = Modifier
-                    .padding(top = 10.dp, bottom = 10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Icon(
+                Text(
                     modifier = Modifier
-                        .padding(horizontal = 10.dp),
-                    painter = painterResource(id = R.drawable.baseline_account_circle_24_tampilan),
-                    contentDescription = "Profile"
+                        .fillMaxWidth()
+                        .clickable { onClick() },
+                    text = "Beri komentar",
+                    color = Color.Blue
                 )
-                Column {
-                    Row {
-                        Text(text = "Ganendra Kalla R")
-                        Text(
-                            text = " - 23 Mar",
-                            color = Color.Gray
-                        )
-                    }
-                    Text(text = "also bring back scar's onigiri please\uD83D\uDE2D\uD83D\uDE2D\uD83D\uDE2D\uD83D\uDE2D")
-                }
             }
             Divider()
         }
+    }
+}
+
+@Composable
+fun Komentar(komentar: Komentar) {
+    Column(
+        modifier = Modifier,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(top = 10.dp, bottom = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                modifier = Modifier
+                    .padding(horizontal = 10.dp),
+                painter = painterResource(id = R.drawable.baseline_account_circle_24_tampilan),
+                contentDescription = "Profile"
+            )
+            Column {
+                Row {
+                    Text(
+                        text = komentar.username,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = " - " + komentar.tanggal_detail,
+                        color = Color.Gray,
+                    )
+                }
+                Text(text = komentar.isi_komentar)
+            }
+        }
+        Divider()
     }
 }
 

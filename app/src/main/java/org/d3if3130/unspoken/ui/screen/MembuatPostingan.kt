@@ -111,8 +111,6 @@ fun MembuatPostingan(navController: NavHostController, id: Long? = null) {
             viewModel,
             modifier = Modifier.padding(padding)
         )
-
-
     }
 }
 
@@ -142,7 +140,6 @@ fun FormCerita(
             label = { Text(text = stringResource(id = R.string.isi)) },
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Sentences,
-                imeAction = ImeAction.Done
             ),
             colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.Transparent,

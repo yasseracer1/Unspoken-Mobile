@@ -8,7 +8,7 @@
     <string name="kembali">Kembali</string>
     <string name="buat_postingan">Buat postingan</string>
     <string name="edit_postingan">Edit postingan</string>
-    <string name="invalid">Invalid</string>
+    <string name="invalid">Invalid input</string>
     <string name="simpan">Simpan</string>
     <string name="opsi_lainnya">Opsi lainnya</string>
     <string name="hapus_catatan">Hapus cerita</string>
@@ -34,4 +34,5 @@
     <string name="logout">Logout</string>
     <string name="cancel">Batal</string>
     <string name="logout_confirmation_message">Kembali halaman login</string>
+    <string name="sign_out">Sign Out</string>
 </resources>

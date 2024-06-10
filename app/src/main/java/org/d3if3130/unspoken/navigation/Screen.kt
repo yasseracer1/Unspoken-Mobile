@@ -11,6 +11,9 @@ sealed class Screen(val route: String) {
         fun withId(id: String) = "openPostingan/$id"
     }
     data object Postingan: Screen("postinganScreen")
+    data object BeriKomentar: Screen("beriKomentar/{$KEY_ID_POSTINGAN}") {
+        fun withId(id: String) = "beriKomentar/$id"
+    }
     data object Profile: Screen("profileScreen")
     data object FormBaru: Screen("detailScreen")
 

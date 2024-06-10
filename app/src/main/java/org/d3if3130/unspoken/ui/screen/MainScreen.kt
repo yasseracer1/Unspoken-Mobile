@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -139,7 +140,7 @@ fun MainScreen(navController: NavHostController, currentUser: FirebaseUser?) {
                             AsyncImage(
                                 modifier = Modifier
                                     .size(40.dp)
-                                    .clip(RoundedCornerShape(4.dp))
+                                    .clip(CircleShape)
                                     .clickable { showDialog = true },
                                 model = ImageRequest.Builder(LocalContext.current)
                                     .data(it)
@@ -316,22 +317,22 @@ fun ListItem(postingan: Postingan, onClick: () -> Unit) {
                     maxLines = 8,
                     overflow = TextOverflow.Ellipsis
                 )
-                Row (
-                    modifier = Modifier
-                        .padding(1.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        modifier = Modifier.padding(end = 20.dp),
-                        painter = painterResource(id = R.drawable.baseline_mode_comment_24),
-                        contentDescription = "comment"
-                    )
-                    Icon(
-                        painter = painterResource(id = R.drawable.baseline_favorite_border_24),
-                        contentDescription = "like"
-                    )
-                    Text(text = postingan.suka)
-                }
+//                Row (
+//                    modifier = Modifier
+//                        .padding(1.dp),
+//                    horizontalArrangement = Arrangement.Center
+//                ) {
+//                    Icon(
+//                        modifier = Modifier.padding(end = 20.dp),
+//                        painter = painterResource(id = R.drawable.baseline_mode_comment_24),
+//                        contentDescription = "comment"
+//                    )
+//                    Icon(
+//                        painter = painterResource(id = R.drawable.baseline_favorite_border_24),
+//                        contentDescription = "like"
+//                    )
+//                    Text(text = postingan.suka)
+//                }
             }
         }
         Divider()

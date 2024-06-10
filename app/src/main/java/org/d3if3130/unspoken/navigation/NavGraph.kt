@@ -15,6 +15,7 @@ import org.d3if3130.unspoken.google.GoogleSignIn
 import org.d3if3130.unspoken.ui.screen.DetailScreen
 import org.d3if3130.unspoken.ui.screen.KEY_ID_CERITA
 import org.d3if3130.unspoken.ui.screen.KEY_ID_POSTINGAN
+import org.d3if3130.unspoken.ui.screen.KomentarScreen
 import org.d3if3130.unspoken.ui.screen.LoginScreen
 import org.d3if3130.unspoken.ui.screen.MainScreen
 import org.d3if3130.unspoken.ui.screen.MembuatPostingan
@@ -62,6 +63,20 @@ fun SetupNavGraph(navController: NavHostController = rememberNavController()) {
             val id = navBackStackEntry.arguments?.getString(KEY_ID_POSTINGAN)
             if (id != null) {
                 OpenPostingan(navController, id)
+            }
+        }
+
+        composable(
+            route = Screen.BeriKomentar.route,
+            arguments = listOf(
+                navArgument(KEY_ID_POSTINGAN) {
+                    type = NavType.StringType
+                }
+            )
+        ) { navBackStackEntry ->
+            val id = navBackStackEntry.arguments?.getString(KEY_ID_POSTINGAN)
+            if (id != null) {
+                KomentarScreen(navController, currentUser = FirebaseAuth.getInstance().currentUser, id)
             }
         }
 

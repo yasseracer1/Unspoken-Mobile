@@ -124,20 +124,20 @@ fun ProfileScreen(navController: NavHostController, currentUser: FirebaseUser?) 
                 }
             )
         },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    navController.navigate(Screen.FormBaru.route)
-                },
-                containerColor = Orange
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Create,
-                    contentDescription = stringResource(id = R.string.buat_postingan),
-                    tint = Color.White
-                )
-            }
-        },
+//        floatingActionButton = {
+//            FloatingActionButton(
+//                onClick = {
+//                    navController.navigate(Screen.FormBaru.route)
+//                },
+//                containerColor = Orange
+//            ) {
+//                Icon(
+//                    imageVector = Icons.Filled.Create,
+//                    contentDescription = stringResource(id = R.string.buat_postingan),
+//                    tint = Color.White
+//                )
+//            }
+//        },
         bottomBar = {
             NavigationBar {
                 items.forEachIndexed { index, item ->
